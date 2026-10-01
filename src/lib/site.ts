@@ -16,6 +16,21 @@ export const SITE_KEYWORDS = [
   "Northwest suburbs florist",
   "gift boxes",
   "All in Bloom Floral Studio",
+  "All in Bloom",
+  "All in Bloom flowers",
+  "allinbloom",
+  "allinbloom flowers",
+  "All in Bloom Wheeling",
+];
+
+// Spellings people search for the brand. Used as schema.org alternateName so
+// Google treats them as the same entity and site name.
+export const SITE_ALTERNATE_NAMES = [
+  "All in Bloom",
+  "All in Bloom Flowers",
+  "AllinBloom",
+  "All inBloom",
+  "allinbloom.us",
 ];
 
 export const SITE_EMAIL = "allinbloom.us@gmail.com";

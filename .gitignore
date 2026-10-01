@@ -42,12 +42,9 @@ pip-delete-this-directory.txt
 
 # Virtual environments
 .venv/
-venv/
 env/
 ENV/
 env.bak/
-venv.bak/
-fastapi/.venv/
 venv*/
 .python-version
 
@@ -56,9 +53,6 @@ venv*/
 .env.*
 !.env.example
 !.env.sample
-fastapi/.env
-fastapi/.env.*
-!fastapi/.env.example
 .envrc
 compose.env
 
@@ -119,7 +113,6 @@ coverage.xml
 *.tmp
 *.temp
 *.bak
-*.swp
 *~.nib
 .fuse_hidden*
 

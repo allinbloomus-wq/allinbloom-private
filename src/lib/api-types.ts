@@ -69,6 +69,7 @@ export type Bouquet = {
   image4: string | null;
   image5: string | null;
   image6: string | null;
+  updatedAt?: string | null;
 };
 
 export type PromoSlide = {

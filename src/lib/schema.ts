@@ -7,12 +7,12 @@ import {
   SITE_DESCRIPTION,
   SITE_EMAIL,
   SITE_GEO,
-  SITE_INSTAGRAM,
-  SITE_MAP_URL,
+  SITE_GOOGLE_PROFILE,
   SITE_NAME,
   SITE_ORIGIN,
   SITE_PHONE,
   SITE_POSTAL_CODE,
+  SITE_PROFILES,
   SITE_REGION,
 } from "@/lib/site";
 
@@ -54,7 +54,7 @@ export function floristSchema(image = "/images/hero-bouquet.webp") {
       addressCountry: SITE_COUNTRY,
     },
     geo: { "@type": "GeoCoordinates", ...SITE_GEO },
-    hasMap: SITE_MAP_URL,
+    hasMap: SITE_GOOGLE_PROFILE,
     areaServed: [
       ...SITE_DELIVERY_AREAS.map((name) => ({
         "@type": "City",
@@ -87,7 +87,7 @@ export function floristSchema(image = "/images/hero-bouquet.webp") {
         url: absoluteUrl(path),
       })),
     },
-    sameAs: [SITE_INSTAGRAM],
+    sameAs: SITE_PROFILES,
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",

@@ -216,6 +216,11 @@ export default async function CatalogPage({
           <h1 className="text-3xl font-semibold text-stone-900 sm:text-5xl">
             Shop all
           </h1>
+          <p className="max-w-2xl text-balance text-sm leading-relaxed text-stone-600">
+            Same-day flower delivery in Wheeling, IL and nearby suburbs. Fresh
+            bouquets, personalized balloons and gift boxes, made by hand at our
+            studio on Milwaukee Ave, plus a studio space to book for your event.
+          </p>
         </div>
         <CategoryTileGrid tiles={shopAllCategoryTiles} singleLineLabels />
       </div>

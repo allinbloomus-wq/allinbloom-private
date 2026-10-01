@@ -34,6 +34,9 @@ const linkClass =
 
 export default function ContactPage() {
   const phoneNumber = SITE_PHONE.replace(/[^+\d]/g, "");
+  const openHours = SITE_HOURS.filter(({ hours }) => hours !== "Closed")
+    .map(({ label, hours }) => `${label} ${hours}`)
+    .join(" and ");
 
   return (
     <div className="space-y-8 sm:space-y-10">
@@ -42,8 +45,9 @@ export default function ContactPage() {
           Get in touch
         </h1>
         <p className="max-w-2xl text-sm leading-relaxed text-stone-600 sm:text-base">
-          Questions about an order, a custom bouquet, corporate flowers or an
-          event? Call us or send a message, and we&apos;ll reply within one
+          Visit our flower studio at {SITE_ADDRESS_LINE_1}, {SITE_CITY},{" "}
+          {SITE_REGION}, open {openHours}. Questions about an order, a custom bouquet,
+          corporate flowers or an event? Call us or send a message, and we&apos;ll reply within one
           business day. Delivery areas and custom orders are covered in the{" "}
           <Link href="/faq" className={linkClass}>
             FAQ

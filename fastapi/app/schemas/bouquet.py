@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Optional
 
 from pydantic import AliasChoices, Field, field_validator, model_validator
@@ -96,6 +97,7 @@ class BouquetOut(SchemaBase):
     image_4: Optional[str] = None
     image_5: Optional[str] = None
     image_6: Optional[str] = None
+    updated_at: Optional[datetime] = None
 
 
 class _BouquetPayloadBase(SchemaBase):

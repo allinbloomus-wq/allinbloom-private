@@ -48,6 +48,21 @@ export const SITE_HOURS = [
 ] as const;
 export const SITE_INSTAGRAM =
   "https://www.instagram.com/all_in_bloom_studio";
+// Google Business Profile, addressed by its stable CID.
+export const SITE_GOOGLE_PROFILE =
+  "https://maps.google.com/?cid=7000307934662495619";
+// Replace with the "Ask for reviews" link from the Business Profile to open
+// the review form directly; the profile link works as a fallback.
+export const SITE_GOOGLE_REVIEW_URL = SITE_GOOGLE_PROFILE;
+export const SITE_YELP =
+  "https://www.yelp.com/biz/all-in-bloom-floral-studio-wheeling-2";
+// Official third-party listings of the same business (schema.org sameAs).
+export const SITE_PROFILES = [
+  SITE_INSTAGRAM,
+  SITE_GOOGLE_PROFILE,
+  SITE_YELP,
+  "https://www.doordash.com/store/all-in-bloom-floral-studio-wheeling-46831931/",
+];
 export const SITE_GEO = {
   latitude: 42.136281087564285,
   longitude: -87.9050852153543,

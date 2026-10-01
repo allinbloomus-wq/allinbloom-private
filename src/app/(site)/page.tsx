@@ -90,6 +90,20 @@ const HOME_FAQ_QUESTIONS = [
   "Can I order flowers and balloons together?",
 ];
 
+// Gallery photos are swapped in the admin panel, so the alt text stays true for
+// any bouquet while still varying per position.
+const HOME_GALLERY_ALTS = [
+  "Fresh bouquet designed at All in Bloom Floral Studio in Wheeling, IL",
+  "Hand-tied seasonal flower arrangement",
+  "Bouquet ready for same-day delivery",
+  "Custom floral arrangement by All in Bloom",
+  "Gift bouquet wrapped at our studio",
+  "Modern bouquet for birthdays and celebrations",
+];
+
+const galleryAlt = (index: number) =>
+  HOME_GALLERY_ALTS[index % HOME_GALLERY_ALTS.length];
+
 const linkClass =
   "font-medium text-stone-800 underline decoration-stone-300 underline-offset-4 transition hover:text-[color:var(--brand)] hover:decoration-[color:var(--brand)]";
 
@@ -115,7 +129,7 @@ export default async function HomePage() {
   const [mainGalleryImage, ...compactGalleryImages] = galleryImages;
   const atelierGalleryItems = galleryImages.map((src, idx) => ({
     src,
-    alt: `Bouquet by All in Bloom Floral Studio, photo ${idx + 1}`,
+    alt: galleryAlt(idx),
     lightboxWidth: 1600,
     lightboxHeight: 1600,
   }));
@@ -419,7 +433,7 @@ export default async function HomePage() {
             <div className="glass overflow-hidden rounded-[28px] border border-white/80 aspect-[5/4]">
               <GalleryImageLightbox
                 src={mainGalleryImage}
-                alt="Recent bouquet by All in Bloom Floral Studio, Wheeling IL"
+                alt={galleryAlt(0)}
                 className="block h-full w-full"
                 imageClassName="h-full w-full object-cover"
                 previewWidth={520}
@@ -436,7 +450,7 @@ export default async function HomePage() {
                 >
                   <GalleryImageLightbox
                     src={src}
-                    alt={`Recent bouquet by All in Bloom, photo ${idx + 2}`}
+                    alt={galleryAlt(idx + 1)}
                     className="block h-full w-full"
                     imageClassName="h-full w-full object-cover"
                     previewWidth={180}
@@ -456,7 +470,7 @@ export default async function HomePage() {
               >
                 <GalleryImageLightbox
                   src={src}
-                  alt={`Recent bouquet by All in Bloom, photo ${idx + 1}`}
+                  alt={galleryAlt(idx)}
                   className="block h-full w-full"
                   imageClassName="h-full w-full object-cover"
                   previewWidth={400}

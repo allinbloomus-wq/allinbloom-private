@@ -30,7 +30,7 @@ function ReviewTextBlock({ name, text, onOpen }: ReviewTextBlockProps) {
       type="button"
       onClick={onOpen}
       aria-label={`Read the full review by ${name}`}
-      className="group flex flex-col items-start gap-2 rounded-xl text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--brand)]"
+      className="rounded-xl text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--brand)]"
     >
       <span
         className="overflow-hidden text-sm leading-relaxed text-stone-700"
@@ -42,9 +42,6 @@ function ReviewTextBlock({ name, text, onOpen }: ReviewTextBlockProps) {
         }}
       >
         {text}
-      </span>
-      <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--brand)] transition group-hover:translate-x-0.5">
-        Read full review
       </span>
     </button>
   );

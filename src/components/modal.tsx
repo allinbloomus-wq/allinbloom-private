@@ -5,6 +5,7 @@ import {
   useEffect,
   useId,
   useRef,
+  useState,
   useSyncExternalStore,
 } from "react";
 import { createPortal } from "react-dom";
@@ -62,6 +63,7 @@ export default function Modal({
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
   const onCloseRef = useRef(onClose);
+  const [isScrolled, setIsScrolled] = useState(false);
   const titleId = useId();
   const descriptionId = useId();
 
@@ -147,8 +149,12 @@ export default function Modal({
         tabIndex={-1}
         className={`glass flex max-h-[min(44rem,calc(100dvh-2rem))] w-full flex-col overflow-hidden rounded-[28px] border border-white/80 shadow-2xl ${panelClassName}`}
       >
-        <div className="modal-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain p-5 sm:p-7">
-        <div className="flex items-start justify-between gap-4 border-b border-stone-200/80 pb-4">
+        {/* The header stays put across the full width; only the body scrolls. */}
+        <div
+          className={`flex shrink-0 items-start justify-between gap-4 border-b border-stone-200/80 px-5 pb-4 pt-5 transition-shadow sm:px-7 sm:pt-7 ${
+            isScrolled ? "shadow-[0_10px_20px_-16px_rgba(36,40,32,0.55)]" : ""
+          }`}
+        >
           <div className="min-w-0">
             <h2 id={titleId} className="text-xl text-stone-900 sm:text-2xl">
               {title}
@@ -176,7 +182,11 @@ export default function Modal({
             </svg>
           </button>
         </div>
-        <div className="pt-5">{children}</div>
+        <div
+          className="modal-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-5 sm:px-7 sm:pb-7"
+          onScroll={(event) => setIsScrolled(event.currentTarget.scrollTop > 4)}
+        >
+          <div className="pt-5">{children}</div>
         </div>
       </div>
     </div>,

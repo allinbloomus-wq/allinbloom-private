@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import BouquetImageLightbox from "@/components/bouquet-image-lightbox";
 import Modal from "@/components/modal";
 import ReviewStars from "@/components/review-stars";
 import type { Review } from "@/lib/api-types";
@@ -29,13 +29,17 @@ export default function ReviewModal({
             {review.text.trim()}
           </p>
           {review.image ? (
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[18px] border border-white/80 bg-white">
-              <Image
+            <div className="aspect-[4/3] w-full overflow-hidden rounded-[18px] border border-white/80 bg-white">
+              {/* Opens full screen above the modal, like the product gallery. */}
+              <BouquetImageLightbox
                 src={review.image}
                 alt={`${review.name} review photo`}
-                fill
-                sizes="(max-width: 672px) 100vw, 640px"
-                className="object-cover"
+                className="block h-full w-full"
+                imageClassName="h-full w-full object-cover object-center"
+                previewWidth={800}
+                previewHeight={600}
+                lightboxWidth={1600}
+                lightboxHeight={1200}
               />
             </div>
           ) : null}

@@ -194,12 +194,27 @@ export default async function HomePage() {
             >
               Shop flowers
             </Link>
-            <Link
-              href="#designers-choice"
-              className="rounded-full border border-[color:var(--brand)]/30 bg-white/70 px-6 py-3 text-center text-sm font-semibold uppercase tracking-[0.2em] text-[color:var(--brand)] transition hover:border-[color:var(--brand)]/60"
+            <a
+              href={`tel:${phoneNumber}`}
+              className="inline-flex items-center justify-center gap-2.5 rounded-full border border-[color:var(--brand)]/30 bg-white/70 px-6 py-3 text-center text-sm font-semibold uppercase tracking-[0.2em] text-[color:var(--brand)] transition hover:border-[color:var(--brand)]/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--brand)]"
             >
-              Design a custom bouquet
-            </Link>
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 20 20"
+                className="h-4 w-4 shrink-0"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M6.5 2.5h-2a1.5 1.5 0 0 0-1.5 1.6c.6 6.7 5.2 11.3 11.9 11.9a1.5 1.5 0 0 0 1.6-1.5v-2a1 1 0 0 0-.7-1l-2.6-.9a1 1 0 0 0-1.1.3l-1 1.2a9 9 0 0 1-4.1-4.1l1.2-1a1 1 0 0 0 .3-1.1l-.9-2.6a1 1 0 0 0-1-.7Z" />
+              </svg>
+              Call to order
+              <span className="hidden font-medium normal-case tracking-normal text-stone-600 sm:inline">
+                {SITE_PHONE_DISPLAY}
+              </span>
+            </a>
           </div>
           <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-stone-600">
             {reviewCount > 0 ? (

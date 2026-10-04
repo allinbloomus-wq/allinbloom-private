@@ -71,6 +71,8 @@ class Settings(BaseSettings):
     google_maps_api_key: str | None = Field(
         default=None, alias="GOOGLE_MAPS_API_KEY"
     )
+    # Optional: skips the one-time Places text search for the business profile.
+    google_place_id: str | None = Field(default=None, alias="GOOGLE_PLACE_ID")
     trust_proxy_headers: bool = Field(default=False, alias="TRUST_PROXY_HEADERS")
     delivery_base_address: str = Field(
         default="1995 Hicks Rd, Rolling Meadows, IL 60008, USA",

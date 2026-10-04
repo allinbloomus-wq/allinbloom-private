@@ -72,3 +72,9 @@ class ReviewToggleActiveOut(SchemaBase):
 
 class ReviewDeleteOut(SchemaBase):
     deleted: bool
+
+
+class GoogleRatingOut(SchemaBase):
+    rating: float
+    review_count: int
+    maps_url: str | None = None

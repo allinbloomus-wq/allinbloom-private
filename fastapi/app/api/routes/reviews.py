@@ -15,7 +15,9 @@ from app.core.config import settings
 from app.core.critical_logging import log_critical_event
 from app.core.rate_limit import SlidingWindowRateLimiter, enforce_rate_limit
 from app.models.review import Review
+from app.services.google_rating import get_google_rating
 from app.schemas.review import (
+    GoogleRatingOut,
     ReviewAdminOut,
     ReviewCountOut,
     ReviewCreateAdmin,
@@ -134,6 +136,13 @@ def _normalize_created_at(value: datetime | None) -> datetime | None:
     if value.tzinfo is None:
         value = value.replace(tzinfo=ZoneInfo(ADMIN_TIMEZONE))
     return value.astimezone(timezone.utc)
+
+
+@router.get("/reviews/google-rating", response_model=GoogleRatingOut | None)
+async def google_rating():
+    """Public Google star rating and review count; null when unavailable."""
+    rating = await get_google_rating()
+    return GoogleRatingOut.model_validate(rating) if rating else None
 
 
 @router.get("/reviews", response_model=list[ReviewPublicOut])

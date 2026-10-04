@@ -260,3 +260,9 @@ export type PaymentEvent = {
   context: Record<string, unknown> | null;
   createdAt: string;
 };
+
+export type GoogleRating = {
+  rating: number;
+  reviewCount: number;
+  mapsUrl: string | null;
+};

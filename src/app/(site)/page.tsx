@@ -9,7 +9,7 @@ import ReviewStars from "@/components/review-stars";
 import type { Review } from "@/lib/api-types";
 import { getFeaturedBouquets } from "@/lib/data/bouquets";
 import { getActivePromoSlides } from "@/lib/data/promotions";
-import { getActiveReviews } from "@/lib/data/reviews";
+import { getActiveReviews, getGoogleRating } from "@/lib/data/reviews";
 import { getStoreSettings } from "@/lib/data/settings";
 import { FAQ_ITEMS } from "@/lib/faq";
 import { getHomeHeroImage, getVisibleHomeGalleryImages } from "@/lib/home-images";
@@ -20,6 +20,7 @@ import {
   SITE_CITY,
   SITE_DELIVERY_AREAS,
   SITE_DESCRIPTION,
+  SITE_GOOGLE_PROFILE,
   SITE_HOURS,
   SITE_MAP_URL,
   SITE_PHONE,
@@ -117,12 +118,14 @@ async function loadReviews(): Promise<Review[]> {
 }
 
 export default async function HomePage() {
-  const [featured, promoSlides, settings, reviews] = await Promise.all([
-    getFeaturedBouquets(),
-    getActivePromoSlides(),
-    getStoreSettings(),
-    loadReviews(),
-  ]);
+  const [featured, promoSlides, settings, reviews, googleRating] =
+    await Promise.all([
+      getFeaturedBouquets(),
+      getActivePromoSlides(),
+      getStoreSettings(),
+      loadReviews(),
+      getGoogleRating(),
+    ]);
   const heroImage = getHomeHeroImage(settings);
   // Administrators can store any number of images; the public home mosaic and
   // its lightbox intentionally expose only the first six in that order.
@@ -140,6 +143,22 @@ export default async function HomePage() {
   const averageRating = reviewCount
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviewCount
     : 0;
+  // Prefer the public Google rating; fall back to the site's own reviews.
+  const ratingSummary = googleRating
+    ? {
+        value: googleRating.rating,
+        count: googleRating.reviewCount,
+        noun: "Google review",
+        href: googleRating.mapsUrl || SITE_GOOGLE_PROFILE,
+      }
+    : reviewCount > 0
+    ? { value: averageRating, count: reviewCount, noun: "review", href: "/reviews" }
+    : null;
+  const ratingLabel = ratingSummary
+    ? `${ratingSummary.value.toFixed(1)} from ${ratingSummary.count} ${ratingSummary.noun}${
+        ratingSummary.count === 1 ? "" : "s"
+      }`
+    : "";
   const topReviews = [...reviews]
     .filter((review) => review.text.trim().length > 0)
     .sort((a, b) => b.rating - a.rating || b.text.length - a.text.length)
@@ -217,13 +236,23 @@ export default async function HomePage() {
             </a>
           </div>
           <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-stone-600">
-            {reviewCount > 0 ? (
+            {ratingSummary ? (
               <li className="flex items-center gap-2">
-                <ReviewStars value={averageRating} size="sm" />
-                <Link href="/reviews" className="hover:text-stone-900">
-                  {averageRating.toFixed(1)} from {reviewCount} review
-                  {reviewCount === 1 ? "" : "s"}
-                </Link>
+                <ReviewStars value={ratingSummary.value} size="sm" />
+                {googleRating ? (
+                  <a
+                    href={ratingSummary.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-stone-900"
+                  >
+                    {ratingLabel}
+                  </a>
+                ) : (
+                  <Link href={ratingSummary.href} className="hover:text-stone-900">
+                    {ratingLabel}
+                  </Link>
+                )}
               </li>
             ) : null}
             <li>Same-day delivery</li>
@@ -378,11 +407,8 @@ export default async function HomePage() {
                 What customers say
               </h2>
               <div className="flex items-center gap-3 text-sm text-stone-600">
-                <ReviewStars value={averageRating} size="md" />
-                <span>
-                  {averageRating.toFixed(1)} average from {reviewCount} review
-                  {reviewCount === 1 ? "" : "s"}
-                </span>
+                <ReviewStars value={ratingSummary?.value ?? averageRating} size="md" />
+                <span>{ratingLabel}</span>
               </div>
             </div>
             <Link

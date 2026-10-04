@@ -1,23 +1,23 @@
 import type { MetadataRoute } from "next";
 import type { Bouquet, CatalogType } from "@/lib/api-types";
-import { apiFetch } from "@/lib/api-server";
+import { getPublicProducts } from "@/lib/data/bouquets";
+import { productPath } from "@/lib/product-paths";
 import { SITE_ORIGIN } from "@/lib/site";
 
-// Latest edit among the public products of one catalog, or undefined when the
-// API is unreachable or returns no dates (lastmod is then simply omitted).
-async function latestUpdate(catalogType: CatalogType): Promise<Date | undefined> {
-  try {
-    const response = await apiFetch(`/api/bouquets?catalogType=${catalogType}`);
-    if (!response.ok) return undefined;
-    const items = (await response.json()) as Bouquet[];
-    const times = items
-      .map((item) => (item.updatedAt ? Date.parse(item.updatedAt) : NaN))
-      .filter((time) => Number.isFinite(time));
-    return times.length ? new Date(Math.max(...times)) : undefined;
-  } catch {
-    return undefined;
-  }
-}
+const CATALOG_TYPES: CatalogType[] = ["FLOWERS", "BALOONS", "GIFTS", "EVENT_SPACE"];
+
+// Public products of one catalog; an unreachable API yields an empty list so
+// the static pages are still listed.
+const loadProducts = (catalogType: CatalogType) =>
+  getPublicProducts(catalogType).catch((): Bouquet[] => []);
+
+const updatedAt = (product: Bouquet) => {
+  const time = product.updatedAt ? Date.parse(product.updatedAt) : NaN;
+  return Number.isFinite(time) ? new Date(time) : undefined;
+};
+
+// Latest edit in a catalog, or undefined (lastmod is then simply omitted).
+const latestUpdate = (products: Bouquet[]) => newest(...products.map(updatedAt));
 
 const newest = (...dates: (Date | undefined)[]) => {
   const times = dates.filter((date): date is Date => Boolean(date)).map(Number);
@@ -26,12 +26,21 @@ const newest = (...dates: (Date | undefined)[]) => {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_ORIGIN.replace(/\/$/, "");
-  const [flowers, balloons, gifts, eventSpace] = await Promise.all([
-    latestUpdate("FLOWERS"),
-    latestUpdate("BALOONS"),
-    latestUpdate("GIFTS"),
-    latestUpdate("EVENT_SPACE"),
-  ]);
+  const catalogs = await Promise.all(CATALOG_TYPES.map(loadProducts));
+  const [flowers, balloons, gifts, eventSpace] = catalogs.map(latestUpdate);
+  const productEntries: MetadataRoute.Sitemap = catalogs.flat().flatMap((product) => {
+    const path = productPath(product);
+    return path
+      ? [
+          {
+            url: `${baseUrl}${path}`,
+            lastModified: updatedAt(product),
+            changeFrequency: "weekly" as const,
+            priority: 0.7,
+          },
+        ]
+      : [];
+  });
 
   // Pages without a data source (FAQ, contact, reviews) carry no lastmod
   // rather than a made-up date.
@@ -93,5 +102,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    ...productEntries,
   ];
 }

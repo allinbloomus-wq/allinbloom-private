@@ -114,6 +114,28 @@ export async function getBouquetById(
   return response.json();
 }
 
+export async function getBouquetBySlug(
+  slug: string,
+  catalogType: CatalogType
+): Promise<Bouquet | null> {
+  const params = new URLSearchParams({ catalogType });
+  const response = await apiFetch(
+    `/api/bouquets/by-slug/${encodeURIComponent(slug)}?${params.toString()}`
+  );
+  if (!response.ok) return null;
+  return response.json();
+}
+
+/** Every active product of one catalog, unpaginated (sitemap use). */
+export async function getPublicProducts(
+  catalogType: CatalogType
+): Promise<Bouquet[]> {
+  const params = new URLSearchParams({ catalogType });
+  const response = await apiFetch(`/api/bouquets?${params.toString()}`);
+  if (!response.ok) return [];
+  return response.json();
+}
+
 export async function getAdminBouquets(
   catalogType: CatalogType = "FLOWERS"
 ): Promise<Bouquet[]> {

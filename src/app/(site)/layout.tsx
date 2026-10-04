@@ -6,7 +6,13 @@ import { floristSchema, toJsonLd, websiteSchema } from "@/lib/schema";
 
 const siteJsonLd = toJsonLd(floristSchema(), websiteSchema());
 
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
+export default function SiteLayout({
+  children,
+  modal,
+}: {
+  children: React.ReactNode;
+  modal: React.ReactNode;
+}) {
   return (
     <div className="min-h-screen">
       <script
@@ -18,6 +24,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         {children}
       </main>
       <Footer />
+      {modal}
       <div id="lightbox-root" />
       <TidioChatWidget />
     </div>

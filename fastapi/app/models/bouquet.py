@@ -9,13 +9,17 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    UniqueConstraint,
+    event,
     func,
+    select,
 )
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Session, relationship
 
 from app.core.database import Base
 from app.models.enums import BouquetType, CatalogType, FlowerType
 from app.utils.ids import generate_cuid
+from app.utils.slug import slugify, unique_slug
 
 
 class Bouquet(Base):
@@ -26,6 +30,7 @@ class Bouquet(Base):
             name="ck_Bouquet_catalogType",
         ),
         CheckConstraint('"currency" = \'USD\'', name="ck_Bouquet_currency_usd"),
+        UniqueConstraint("catalogType", "slug", name="uq_Bouquet_catalogType_slug"),
     )
 
     id = Column(String, primary_key=True, default=generate_cuid)
@@ -42,6 +47,9 @@ class Bouquet(Base):
         index=True,
     )
     name = Column(String, nullable=False)
+    # Public URL segment, generated once from the name on creation and never
+    # changed afterwards so shared and indexed links keep working.
+    slug = Column(String, nullable=True)
     description = Column(String, nullable=False)
     price_cents = Column("priceCents", Integer, nullable=False)
     currency = Column(String, default="USD", nullable=False)
@@ -124,3 +132,31 @@ class Bouquet(Base):
         """Schema-facing alias for the normalized gallery URL list."""
 
         return self.gallery_image_urls
+
+
+@event.listens_for(Session, "before_flush")
+def _assign_missing_slugs(session: Session, _flush_context, _instances) -> None:
+    """Give every product without a slug its permanent one, whatever code path
+    created it (API, seed, scripts). Existing slugs are never rewritten."""
+    pending = [
+        obj
+        for obj in (*session.new, *session.dirty)
+        if isinstance(obj, Bouquet) and not obj.slug
+    ]
+    if not pending:
+        return
+    taken: dict[str, set[str]] = {}
+    for bouquet in pending:
+        catalog_type = bouquet.catalog_type or CatalogType.FLOWERS.value
+        if catalog_type not in taken:
+            with session.no_autoflush:
+                taken[catalog_type] = set(
+                    session.execute(
+                        select(Bouquet.slug).where(
+                            Bouquet.catalog_type == catalog_type,
+                            Bouquet.slug.is_not(None),
+                        )
+                    ).scalars()
+                )
+        bouquet.slug = unique_slug(slugify(bouquet.name), taken[catalog_type])
+        taken[catalog_type].add(bouquet.slug)

@@ -62,6 +62,7 @@ class BouquetOut(SchemaBase):
     category_id: Optional[str] = None
     category: CatalogCategoryOut | None = None
     name: str
+    slug: Optional[str] = None
     description: str
     price_cents: int
     currency: str

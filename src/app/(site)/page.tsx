@@ -13,6 +13,7 @@ import { getActiveReviews } from "@/lib/data/reviews";
 import { getStoreSettings } from "@/lib/data/settings";
 import { FAQ_ITEMS } from "@/lib/faq";
 import { getHomeHeroImage, getVisibleHomeGalleryImages } from "@/lib/home-images";
+import { productPath } from "@/lib/product-paths";
 import { getBouquetPricing } from "@/lib/pricing";
 import {
   SITE_ADDRESS_LINE_1,
@@ -259,6 +260,7 @@ export default async function HomePage() {
               key={bouquet.id}
               bouquet={bouquet}
               pricing={getBouquetPricing(bouquet, settings)}
+              href={productPath(bouquet)}
             />
           ))}
         </div>

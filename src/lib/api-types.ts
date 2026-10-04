@@ -43,6 +43,8 @@ export type Bouquet = {
   categoryId?: string | null;
   category?: CatalogCategory | null;
   name: string;
+  /** Permanent URL segment, assigned once when the product is created. */
+  slug?: string | null;
   description: string;
   priceCents: number;
   currency: string;

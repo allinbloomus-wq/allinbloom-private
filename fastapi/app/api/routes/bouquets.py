@@ -190,6 +190,30 @@ def list_bouquets(
     return db.execute(stmt).scalars().all()
 
 
+@router.get("/by-slug/{slug}", response_model=BouquetOut)
+def get_bouquet_by_slug(
+    slug: str,
+    catalog_type: CatalogType = Query(default=CatalogType.FLOWERS, alias="catalogType"),
+    db: Session = Depends(get_db),
+):
+    bouquet = (
+        db.execute(
+            _with_catalog_relations(
+                select(Bouquet).where(
+                    Bouquet.slug == slug,
+                    Bouquet.catalog_type == catalog_type.value,
+                    Bouquet.is_active.is_(True),
+                )
+            )
+        )
+        .scalars()
+        .first()
+    )
+    if not bouquet:
+        raise HTTPException(status_code=404, detail="Not found")
+    return bouquet
+
+
 @router.get("/{bouquet_id}", response_model=BouquetOut)
 def get_bouquet(
     bouquet_id: str,

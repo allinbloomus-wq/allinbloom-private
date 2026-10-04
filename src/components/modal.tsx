@@ -83,6 +83,9 @@ export default function Modal({
     const animationFrame = window.requestAnimationFrame(focusDialog);
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      // A dialog opened on top (e.g. an image lightbox) owns the keyboard.
+      const dialogs = document.querySelectorAll('[aria-modal="true"]');
+      if (Array.from(dialogs).some((dialog) => dialog !== dialogRef.current)) return;
       if (event.key === "Escape") {
         event.preventDefault();
         onCloseRef.current();

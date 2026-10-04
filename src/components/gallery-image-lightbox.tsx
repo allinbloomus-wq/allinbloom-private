@@ -278,14 +278,14 @@ export default function GalleryImageLightbox({
                       height: telegramViewport.top + telegramViewport.height + 2,
                       right: "auto",
                       bottom: "auto",
-                      zIndex: 120,
+                      zIndex: 140,
                     }
                   : {
                       top: 0,
                       left: 0,
                       right: 0,
                       bottom: 0,
-                      zIndex: 120,
+                      zIndex: 140,
                     }
               }
               role="dialog"

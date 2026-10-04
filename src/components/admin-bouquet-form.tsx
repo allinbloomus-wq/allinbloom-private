@@ -11,6 +11,7 @@ import {
 } from "@/lib/flower-quantity";
 import { formatLabel } from "@/lib/format";
 import AdminImageList from "@/components/admin-image-list";
+import AdminProductUrl from "@/components/admin-product-url";
 import MultiCheckboxDropdown from "@/components/multi-checkbox-dropdown";
 import SingleSelectDropdown from "@/components/single-select-dropdown";
 import { getBouquetGalleryImages } from "@/lib/bouquet-images";
@@ -325,6 +326,7 @@ function AdminBouquetFormEditor({
               className={controlFieldClass(invalidSet.has("name"))}
             />
           </label>
+          <AdminProductUrl product={bouquet} />
           <label className="flex flex-col gap-2 text-sm font-medium text-stone-700">
             Description
             <textarea

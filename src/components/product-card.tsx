@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import AddToCartControls from "@/components/add-to-cart-controls";
 import MosaicGallery from "@/components/mosaic-gallery";
@@ -20,6 +21,10 @@ type ProductCardProps = {
     percent: number;
     note: string;
   } | null;
+  /** Product page the title links to (listings only). */
+  href?: string | null;
+  /** The product page promotes the name to the page heading. */
+  titleAs?: "h1" | "h2";
 };
 
 function GiftPrice({
@@ -87,6 +92,8 @@ export default function ProductCard({
   kind,
   pricing,
   firstOrderDiscount = null,
+  href = null,
+  titleAs: Title = "h2",
 }: ProductCardProps) {
   const isEvent = kind === "event";
   const galleryImages = getBouquetGalleryImages(product);
@@ -152,9 +159,18 @@ export default function ProductCard({
 
   return (
     <article className="glass space-y-5 overflow-hidden rounded-[28px] border border-white/80 p-3 shadow-sm sm:space-y-6 sm:p-5 lg:p-6">
-      <h2 className="break-words text-left text-2xl font-semibold leading-tight text-stone-900 sm:text-3xl lg:text-4xl">
-        {product.name}
-      </h2>
+      <Title className="break-words text-left text-2xl font-semibold leading-tight text-stone-900 sm:text-3xl lg:text-4xl">
+        {href ? (
+          <Link
+            href={href}
+            className="rounded-sm transition hover:text-[color:var(--brand)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--brand)]"
+          >
+            {product.name}
+          </Link>
+        ) : (
+          product.name
+        )}
+      </Title>
       <div
         className={`grid min-w-0 gap-5 ${
           usesSplitVerticalMedia

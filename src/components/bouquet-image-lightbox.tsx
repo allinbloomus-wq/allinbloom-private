@@ -277,7 +277,7 @@ export default function BouquetImageLightbox({
                       height: telegramViewport.top + telegramViewport.height + 2,
                       right: "auto",
                       bottom: "auto",
-                      zIndex: 120,
+                      zIndex: 140,
                       animation: "lightbox-fade-in 160ms ease-out",
                     }
                   : {
@@ -285,7 +285,7 @@ export default function BouquetImageLightbox({
                       left: 0,
                       right: 0,
                       bottom: 0,
-                      zIndex: 120,
+                      zIndex: 140,
                       animation: "lightbox-fade-in 160ms ease-out",
                     }
               }

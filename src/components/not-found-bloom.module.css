@@ -1,0 +1,137 @@
+/* The "0" of 404 is a rose: the stem grows, the leaf unfurls, petals open in
+   turn, then the head sways and now and then drops a petal. */
+.flower {
+  --petal-edge: #b9302b;
+  --p1: #e8463f;
+  --p2: #f26a5a;
+  --p3: #cf3534;
+  --heart: #f2b33d;
+  --heart-edge: #c98a1b;
+  --stem: #3f8a5d;
+  --leaf: #5fae7e;
+  width: 0.86em;
+  height: 1.35em;
+  overflow: visible;
+}
+
+.stem {
+  fill: none;
+  stroke: var(--stem);
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-dasharray: 160;
+  stroke-dashoffset: 0;
+  animation: grow 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.leaf {
+  fill: var(--leaf);
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  animation: unfurl 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+}
+
+.leafVein {
+  fill: none;
+  stroke: var(--stem);
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: 0.6;
+  animation: fade 0.6s ease-out 0.9s both;
+}
+
+.petal {
+  fill: var(--shade);
+  stroke: var(--petal-edge);
+  stroke-width: 1.5;
+  stroke-opacity: 0.35;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: open 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.heart {
+  fill: var(--heart);
+}
+
+.heartRing {
+  fill: none;
+  stroke: var(--heart-edge);
+  stroke-width: 2;
+  opacity: 0.6;
+  animation: fade 0.6s ease-out 1.4s both;
+}
+
+.head {
+  transform-origin: 100px 250px;
+  animation: sway 6s ease-in-out 2s infinite;
+}
+
+.drift {
+  fill: var(--p1);
+  opacity: 0;
+  animation: drift 7s ease-in 3s infinite;
+}
+
+@keyframes grow {
+  from {
+    stroke-dashoffset: 160;
+  }
+}
+
+@keyframes unfurl {
+  from {
+    transform: scale(0.1) rotate(-30deg);
+  }
+}
+
+@keyframes open {
+  from {
+    transform: scale(0.15) rotate(-18deg);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-2.5deg);
+  }
+  50% {
+    transform: rotate(2.5deg);
+  }
+}
+
+@keyframes drift {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  8% {
+    opacity: 0.95;
+  }
+  70% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(70px, 190px) rotate(220deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stem,
+  .leaf,
+  .leafVein,
+  .petal,
+  .heartRing,
+  .head,
+  .drift {
+    animation: none;
+  }
+}

@@ -7,6 +7,7 @@ import ProductCard, {
 } from "@/components/product-card";
 import type { CatalogItem } from "@/lib/api-types";
 import type { CatalogSearchParams } from "@/lib/data/bouquets";
+import { productPath } from "@/lib/product-paths";
 
 export type CatalogGridVariant = "bouquet" | EditorialProductKind;
 
@@ -172,6 +173,7 @@ export default function CatalogGrid({
               firstOrderDiscount={firstOrderDiscount}
               enableFlowerQuantityInput={filters.catalogType !== "BALOONS"}
               splitPriceRows
+              href={productPath(entry.bouquet)}
             />
           ) : (
             <ProductCard
@@ -180,6 +182,7 @@ export default function CatalogGrid({
               kind={cardVariant}
               pricing={entry.pricing}
               firstOrderDiscount={firstOrderDiscount}
+              href={productPath(entry.bouquet)}
             />
           )
         ))}

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useFormStatus } from "react-dom";
 import type { Bouquet } from "@/lib/api-types";
 import AdminImageList from "@/components/admin-image-list";
+import AdminProductUrl from "@/components/admin-product-url";
 import { FilterDropdown } from "@/components/catalog-filters";
 import { getBouquetGalleryImages } from "@/lib/bouquet-images";
 
@@ -144,6 +145,7 @@ export default function AdminCatalogProductForm({
             Name
             <input name="name" defaultValue={product?.name} required className={controlClass} />
           </label>
+          <AdminProductUrl product={product} />
           <label className="flex flex-col gap-2 text-sm font-medium text-stone-700">
             Description
             <textarea

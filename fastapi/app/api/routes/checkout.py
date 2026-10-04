@@ -309,8 +309,9 @@ def _validate_delivery_date_time(value: str) -> bool:
     if time_window not in DELIVERY_TIME_WINDOWS:
         return False
 
+    # Ideal delivery time is no longer collected; validate only if provided.
     if not ideal_time:
-        return False
+        return True
 
     normalized_ideal_time = ideal_time.upper().replace(" ", "")
     try:

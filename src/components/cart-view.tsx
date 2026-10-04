@@ -237,23 +237,14 @@ const DELIVERY_TIME_WINDOWS = [
   {
     value: "8:30 AM - 12 PM",
     label: "8:30 AM - 12 PM",
-    start: 8 * 60,
-    end: 12 * 60,
-    example: "10:30 AM",
   },
   {
     value: "12 PM - 4 PM",
     label: "12 PM - 4 PM",
-    start: 12 * 60,
-    end: 16 * 60,
-    example: "2:30 PM",
   },
   {
     value: "4 PM - 8 PM",
     label: "4 PM - 8 PM",
-    start: 16 * 60,
-    end: 20 * 60,
-    example: "6:30 PM",
   },
 ] as const;
 
@@ -265,7 +256,6 @@ type CheckoutField =
   | "postalCode"
   | "deliveryDate"
   | "deliveryTimeWindow"
-  | "idealTime"
   | "phone"
   | "recipientName"
   | "recipientPhone";
@@ -278,7 +268,6 @@ const CHECKOUT_FIELD_LABELS: Record<CheckoutField, string> = {
   postalCode: "ZIP code",
   deliveryDate: "delivery date",
   deliveryTimeWindow: "delivery time window",
-  idealTime: "ideal delivery time",
   phone: "sender phone number",
   recipientName: "recipient name",
   recipientPhone: "recipient phone number",
@@ -342,65 +331,26 @@ const addOneMonth = (date: Date) => {
   return next;
 };
 
-const parseMeridiemTimeToMinutes = (value: string) => {
-  const match = value
-    .trim()
-    .match(/^(0?[1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)$/i);
-  if (!match) return null;
-  const hour12 = Number(match[1]);
-  const minute = Number(match[2]);
-  const suffix = match[3].toUpperCase();
-  const hour24 =
-    suffix === "AM" ? hour12 % 12 : hour12 === 12 ? 12 : hour12 + 12;
-  return hour24 * 60 + minute;
-};
-
-const getDeliveryTimeWindow = (value: string) =>
-  DELIVERY_TIME_WINDOWS.find((window) => window.value === value) || null;
-
-const isValidTimeValue = (value: string, timeWindowValue: string) => {
-  const minutes = parseMeridiemTimeToMinutes(value);
-  if (minutes === null) return false;
-  const timeWindow = getDeliveryTimeWindow(timeWindowValue);
-  if (!timeWindow) return false;
-  return minutes >= timeWindow.start && minutes <= timeWindow.end;
-};
-
-const formatHourMinuteToMeridiem = (value: string) => {
-  const match = value.match(/^([01]\d|2[0-3]):([0-5]\d)$/);
-  if (!match) return value;
-  const hour24 = Number(match[1]);
-  const hour12 = hour24 % 12 || 12;
-  const suffix = hour24 < 12 ? "AM" : "PM";
-  return `${hour12}:${match[2]} ${suffix}`;
-};
-
 const parseStoredDeliverySchedule = (value: string | undefined) => {
   const trimmed = value?.trim() || "";
   if (!trimmed) {
-    return { date: "", timeWindow: "", idealTime: "" };
+    return { date: "", timeWindow: "" };
   }
 
   try {
     const parsed = JSON.parse(trimmed) as {
       date?: unknown;
       timeWindow?: unknown;
-      idealTime?: unknown;
     };
     return {
       date: typeof parsed.date === "string" ? parsed.date : "",
       timeWindow: typeof parsed.timeWindow === "string" ? parsed.timeWindow : "",
-      idealTime:
-        typeof parsed.idealTime === "string"
-          ? formatHourMinuteToMeridiem(parsed.idealTime)
-          : "",
     };
   } catch {
-    const [datePart, timePart = ""] = trimmed.split("T");
+    const [datePart] = trimmed.split("T");
     return {
       date: isValidDateValue(datePart) ? datePart : "",
       timeWindow: "",
-      idealTime: formatHourMinuteToMeridiem(timePart.slice(0, 5)),
     };
   }
 };
@@ -709,7 +659,6 @@ export default function CartView({
   const [country, setCountry] = useState(DEFAULT_COUNTRY);
   const [deliveryDate, setDeliveryDate] = useState("");
   const [deliveryTimeWindow, setDeliveryTimeWindow] = useState("");
-  const [idealDeliveryTime, setIdealDeliveryTime] = useState("");
   const [orderComment, setOrderComment] = useState("");
   const [phoneLocal, setPhoneLocal] = useState(() => toLocalPhoneDigits(userPhone));
   const [recipientName, setRecipientName] = useState("");
@@ -771,22 +720,13 @@ export default function CartView({
   const deliveryTimeWindowValid = DELIVERY_TIME_WINDOWS.some(
     (window) => window.value === deliveryTimeWindow
   );
-  const selectedDeliveryTimeWindow = getDeliveryTimeWindow(deliveryTimeWindow);
-  const idealDeliveryTimeValid = isValidTimeValue(
-    idealDeliveryTime,
-    deliveryTimeWindow
-  );
-  const idealDeliveryTimeHelp = selectedDeliveryTimeWindow
-    ? `Enter a time within ${selectedDeliveryTimeWindow.label}, for example ${selectedDeliveryTimeWindow.example}.`
-    : "Select a delivery time window first.";
   const deliveryDateTime = useMemo(
     () =>
       JSON.stringify({
         date: deliveryDate.trim(),
         timeWindow: deliveryTimeWindow.trim(),
-        idealTime: idealDeliveryTime.trim().toUpperCase(),
       }),
-    [deliveryDate, deliveryTimeWindow, idealDeliveryTime]
+    [deliveryDate, deliveryTimeWindow]
   );
   const addressForQuote = useMemo(
     () =>
@@ -984,9 +924,6 @@ export default function CartView({
       setDeliveryTimeWindow(
         stored.deliveryTimeWindow?.trim() || storedSchedule.timeWindow
       );
-      setIdealDeliveryTime(
-        stored.idealDeliveryTime?.trim() || storedSchedule.idealTime
-      );
       setOrderComment(stored.orderComment?.trim() || "");
       if (stored.phoneLocal) {
         setPhoneLocal(stored.phoneLocal);
@@ -1004,7 +941,6 @@ export default function CartView({
       deliveryDateTime: deliveryDateTime.trim(),
       deliveryDate: deliveryDate.trim(),
       deliveryTimeWindow: deliveryTimeWindow.trim(),
-      idealDeliveryTime: idealDeliveryTime.trim(),
       orderComment: orderComment.trim(),
       phoneLocal,
       recipientName: recipientName.trim(),
@@ -1015,7 +951,6 @@ export default function CartView({
     deliveryDateTime,
     deliveryTimeWindow,
     guestEmail,
-    idealDeliveryTime,
     isAuthenticated,
     orderComment,
     phoneLocal,
@@ -1038,7 +973,6 @@ export default function CartView({
     setCountry(DEFAULT_COUNTRY);
     setDeliveryDate("");
     setDeliveryTimeWindow("");
-    setIdealDeliveryTime("");
     setQuote(null);
     setQuoteError(null);
     setAddressSuggestionsLoading(false);
@@ -1416,7 +1350,6 @@ export default function CartView({
     if (!postalCode.trim()) missing.push("postalCode");
     if (!deliveryDateValid) missing.push("deliveryDate");
     if (!deliveryTimeWindowValid) missing.push("deliveryTimeWindow");
-    if (!idealDeliveryTimeValid) missing.push("idealTime");
     if (method === "stripe" && !phoneValid) missing.push("phone");
     if (!recipientName.trim()) missing.push("recipientName");
     if (!recipientPhoneValid) missing.push("recipientPhone");
@@ -1431,7 +1364,6 @@ export default function CartView({
         postalCode: true,
         deliveryDate: !deliveryDate.trim(),
         deliveryTimeWindow: true,
-        idealTime: !idealDeliveryTime.trim(),
         phone: !phoneLocal,
         recipientName: true,
         recipientPhone: !recipientPhoneLocal,
@@ -2040,46 +1972,6 @@ export default function CartView({
                 Choose a delivery date between today and one month from now.
               </FieldError>
             ) : null}
-            <label
-              {...checkoutFieldProps("idealTime")}
-              className={`flex flex-col gap-2 text-sm font-medium text-stone-700 ${invalidFieldClass("idealTime")}`}
-            >
-              Ideal delivery time
-              <input
-                type="text"
-                value={idealDeliveryTime}
-                required
-                inputMode="text"
-                placeholder="2:30 PM"
-                pattern="^(0?[1-9]|1[0-2]):[0-5][0-9]\s?(AM|PM|am|pm)$"
-                title={idealDeliveryTimeHelp}
-                {...fieldAria(
-                  "idealTime",
-                  Boolean(idealDeliveryTime) && !idealDeliveryTimeValid
-                )}
-                onChange={(event) =>
-                  setIdealDeliveryTime(
-                    event.target.value
-                      .replace(/[^0-9: apmAPM]/g, "")
-                      .replace(/\s+/g, " ")
-                      .slice(0, 8)
-                  )
-                }
-                onBlur={() => {
-                  setIdealDeliveryTime((current) => current.trim().toUpperCase());
-                }}
-                className={fieldClass}
-              />
-              {idealDeliveryTime && !idealDeliveryTimeValid ? (
-                <FieldError id={fieldErrorId("idealTime")}>
-                  {idealDeliveryTimeHelp}
-                </FieldError>
-              ) : null}
-              <span className="text-xs text-stone-500">
-                We will do our best to deliver at this time or within the selected
-                window.
-              </span>
-            </label>
           </div>
           <label
             {...checkoutFieldProps("phone")}

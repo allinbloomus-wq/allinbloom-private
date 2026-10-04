@@ -60,7 +60,6 @@ export type CheckoutFormStorage = {
   deliveryDateTime?: string;
   deliveryDate?: string;
   deliveryTimeWindow?: string;
-  idealDeliveryTime?: string;
   orderComment?: string;
   phoneLocal: string;
   recipientName?: string;

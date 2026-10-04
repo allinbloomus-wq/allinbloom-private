@@ -145,8 +145,9 @@ export default function Modal({
         aria-labelledby={titleId}
         aria-describedby={description ? descriptionId : undefined}
         tabIndex={-1}
-        className={`glass max-h-[min(44rem,calc(100dvh-2rem))] w-full overflow-y-auto rounded-[28px] border border-white/80 p-5 shadow-2xl sm:p-7 ${panelClassName}`}
+        className={`glass flex max-h-[min(44rem,calc(100dvh-2rem))] w-full flex-col overflow-hidden rounded-[28px] border border-white/80 shadow-2xl ${panelClassName}`}
       >
+        <div className="modal-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain p-5 sm:p-7">
         <div className="flex items-start justify-between gap-4 border-b border-stone-200/80 pb-4">
           <div className="min-w-0">
             <h2 id={titleId} className="text-xl text-stone-900 sm:text-2xl">
@@ -176,6 +177,7 @@ export default function Modal({
           </button>
         </div>
         <div className="pt-5">{children}</div>
+        </div>
       </div>
     </div>,
     document.body

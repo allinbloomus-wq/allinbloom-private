@@ -176,35 +176,36 @@
 }
 
 @layer utilities {
-  .legal-notice-modal {
+  /* Shared scroll area for every modal: slim brand-tinted thumb inset from rounded corners. */
+  .modal-scroll {
     scrollbar-width: thin;
-    scrollbar-color: rgba(var(--brand-rgb), 0.72) rgba(var(--cream-rgb), 0.34);
+    scrollbar-color: rgba(var(--brand-rgb), 0.55) transparent;
     scrollbar-gutter: stable;
   }
 
-  .legal-notice-modal::-webkit-scrollbar {
-    width: 0.72rem;
+  .modal-scroll::-webkit-scrollbar {
+    width: 14px;
   }
 
-  .legal-notice-modal::-webkit-scrollbar-track {
-    margin: 1.75rem 0.45rem;
-    border-radius: 999px;
-    background: rgba(var(--cream-rgb), 0.34);
+  .modal-scroll::-webkit-scrollbar-button {
+    display: none;
+    height: 0;
   }
 
-  .legal-notice-modal::-webkit-scrollbar-thumb {
+  .modal-scroll::-webkit-scrollbar-track {
+    margin: 1.5rem 0;
+    background: transparent;
+  }
+
+  .modal-scroll::-webkit-scrollbar-thumb {
     min-height: 3rem;
-    border: 3px solid transparent;
+    border: 5px solid transparent;
     border-radius: 999px;
-    background:
-      linear-gradient(180deg, rgba(var(--brand-rgb), 0.86), rgba(var(--accent-rgb), 0.7))
-      padding-box;
+    background: rgba(var(--brand-rgb), 0.45) padding-box;
   }
 
-  .legal-notice-modal::-webkit-scrollbar-thumb:hover {
-    background:
-      linear-gradient(180deg, var(--brand-dark), rgba(var(--brand-rgb), 0.88))
-      padding-box;
+  .modal-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--brand-rgb), 0.8) padding-box;
   }
 
   .select-field {

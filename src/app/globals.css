@@ -178,9 +178,15 @@
 @layer utilities {
   /* Shared scroll area for every modal: slim brand-tinted thumb inset from rounded corners. */
   .modal-scroll {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(var(--brand-rgb), 0.55) transparent;
     scrollbar-gutter: stable;
+  }
+
+  /* Firefox only: in Chrome these standard props would override the ::-webkit styles below. */
+  @supports not selector(::-webkit-scrollbar) {
+    .modal-scroll {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(var(--brand-rgb), 0.55) transparent;
+    }
   }
 
   .modal-scroll::-webkit-scrollbar {
@@ -193,7 +199,8 @@
   }
 
   .modal-scroll::-webkit-scrollbar-track {
-    margin: 1.5rem 0;
+    /* 28px panel radius + 10px breathing room */
+    margin: 38px 0;
     background: transparent;
   }
 

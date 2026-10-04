@@ -23,7 +23,7 @@ export default function ReviewModal({
       closeLabel="Close review"
     >
       {review ? (
-        <div className="space-y-5 pt-5">
+        <div className="space-y-5">
           <ReviewStars value={review.rating} size="md" readOnly />
           <p className="whitespace-pre-line break-words text-base leading-relaxed text-stone-700">
             {review.text.trim()}

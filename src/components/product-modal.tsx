@@ -21,7 +21,7 @@ export default function ProductModal({
       panelClassName="max-w-5xl"
       closeLabel="Close product"
     >
-      <div className="pt-5">{children}</div>
+      {children}
     </Modal>
   );
 }

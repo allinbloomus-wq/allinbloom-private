@@ -151,7 +151,7 @@ export default function Modal({
       >
         {/* The header stays put across the full width; only the body scrolls. */}
         <div
-          className={`flex shrink-0 items-start justify-between gap-4 border-b border-stone-200/80 px-5 pb-4 pt-5 transition-shadow sm:px-7 sm:pt-7 ${
+          className={`flex shrink-0 items-start justify-between gap-4 border-b border-stone-200/80 px-5 pb-3 pt-4 transition-shadow sm:px-7 sm:pb-4 sm:pt-5 ${
             isScrolled ? "shadow-[0_10px_20px_-16px_rgba(36,40,32,0.55)]" : ""
           }`}
         >
@@ -186,7 +186,7 @@ export default function Modal({
           className="modal-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-5 sm:px-7 sm:pb-7"
           onScroll={(event) => setIsScrolled(event.currentTarget.scrollTop > 4)}
         >
-          <div className="pt-5">{children}</div>
+          <div className="pt-4">{children}</div>
         </div>
       </div>
     </div>,

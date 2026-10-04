@@ -9,6 +9,7 @@ import ReviewStars from "@/components/review-stars";
 import type { Review } from "@/lib/api-types";
 import { getFeaturedBouquets } from "@/lib/data/bouquets";
 import { getActivePromoSlides } from "@/lib/data/promotions";
+import ReviewQuoteCards from "@/components/review-quote-cards";
 import { getActiveReviews, getGoogleRating } from "@/lib/data/reviews";
 import { getStoreSettings } from "@/lib/data/settings";
 import { FAQ_ITEMS } from "@/lib/faq";
@@ -230,9 +231,6 @@ export default async function HomePage() {
                 <path d="M6.5 2.5h-2a1.5 1.5 0 0 0-1.5 1.6c.6 6.7 5.2 11.3 11.9 11.9a1.5 1.5 0 0 0 1.6-1.5v-2a1 1 0 0 0-.7-1l-2.6-.9a1 1 0 0 0-1.1.3l-1 1.2a9 9 0 0 1-4.1-4.1l1.2-1a1 1 0 0 0 .3-1.1l-.9-2.6a1 1 0 0 0-1-.7Z" />
               </svg>
               Call to order
-              <span className="hidden font-medium normal-case tracking-normal text-stone-600 sm:inline">
-                {SITE_PHONE_DISPLAY}
-              </span>
             </a>
           </div>
           <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-stone-600">
@@ -418,22 +416,7 @@ export default async function HomePage() {
               All reviews
             </Link>
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {topReviews.map((review) => (
-              <figure
-                key={review.id}
-                className="flex flex-col justify-between gap-5 rounded-[28px] border border-white/80 bg-white/70 p-6 shadow-sm"
-              >
-                <blockquote className="line-clamp-6 text-sm leading-relaxed text-stone-700 sm:text-base">
-                  &ldquo;{review.text.trim()}&rdquo;
-                </blockquote>
-                <figcaption className="flex items-center justify-between gap-3 text-sm font-semibold text-stone-900">
-                  {review.name}
-                  <ReviewStars value={review.rating} size="sm" />
-                </figcaption>
-              </figure>
-            ))}
-          </div>
+          <ReviewQuoteCards reviews={topReviews} />
         </section>
       ) : null}
 

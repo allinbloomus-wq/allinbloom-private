@@ -176,15 +176,6 @@
 }
 
 @layer utilities {
-  .reviews-text-scroll {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .reviews-text-scroll::-webkit-scrollbar {
-    display: none;
-  }
-
   .legal-notice-modal {
     scrollbar-width: thin;
     scrollbar-color: rgba(var(--brand-rgb), 0.72) rgba(var(--cream-rgb), 0.34);

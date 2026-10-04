@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import BouquetImageLightbox from "@/components/bouquet-image-lightbox";
+import ReviewModal from "@/components/review-modal";
 import ReviewStars from "@/components/review-stars";
 import { formatDate } from "@/lib/format";
 import type { Review } from "@/lib/api-types";
@@ -17,23 +18,42 @@ const INTERACTION_CLICK_THRESHOLD = 8;
 const REVIEW_TEXT_VISIBLE_LINES = 8;
 
 type ReviewTextBlockProps = {
+  name: string;
   text: string;
+  onOpen: () => void;
 };
 
-function ReviewTextBlock({ text }: ReviewTextBlockProps) {
+// Clamped preview; the full text opens in a modal so cards keep one height.
+function ReviewTextBlock({ name, text, onOpen }: ReviewTextBlockProps) {
   return (
-    <p
-      className="reviews-text-scroll overflow-y-auto pr-2 text-sm leading-relaxed text-stone-700"
-      style={{ height: `calc(${REVIEW_TEXT_VISIBLE_LINES} * 1.625em)` }}
+    <button
+      type="button"
+      onClick={onOpen}
+      aria-label={`Read the full review by ${name}`}
+      className="group flex flex-col items-start gap-2 rounded-xl text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--brand)]"
     >
-      {text}
-    </p>
+      <span
+        className="overflow-hidden text-sm leading-relaxed text-stone-700"
+        style={{
+          display: "-webkit-box",
+          WebkitBoxOrient: "vertical",
+          WebkitLineClamp: REVIEW_TEXT_VISIBLE_LINES,
+          height: `calc(${REVIEW_TEXT_VISIBLE_LINES} * 1.625em)`,
+        }}
+      >
+        {text}
+      </span>
+      <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--brand)] transition group-hover:translate-x-0.5">
+        Read full review
+      </span>
+    </button>
   );
 }
 
 export default function ReviewsGallery({ reviews }: ReviewsGalleryProps) {
   const items = useMemo(() => reviews, [reviews]);
 
+  const [openReview, setOpenReview] = useState<Review | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [pageCount, setPageCount] = useState(1);
   const [isAutoPaused, setIsAutoPaused] = useState(false);
@@ -287,7 +307,16 @@ export default function ReviewsGallery({ reviews }: ReviewsGalleryProps) {
                         className="shrink-0"
                       />
                     </div>
-                    <ReviewTextBlock text={review.text} />
+                    <ReviewTextBlock
+                      name={review.name}
+                      text={review.text}
+                      onOpen={() => {
+                        // A drag across the carousel must not open the review.
+                        if (blockImageOpenRef.current) return;
+                        pauseAutoscroll();
+                        setOpenReview(review);
+                      }}
+                    />
                   </div>
                 </article>
               </div>
@@ -356,6 +385,7 @@ export default function ReviewsGallery({ reviews }: ReviewsGalleryProps) {
           />
         ))}
       </div>
+      <ReviewModal review={openReview} onClose={() => setOpenReview(null)} />
     </div>
   );
 }
